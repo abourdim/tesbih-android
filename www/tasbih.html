@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a1a12">
+<title>مسبحة - Tasbih</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+  :root{
+    --bg:#0a1a12;
+    --bg2:#122a1c;
+    --bg3:#1a3a28;
+    --gold:#d4a843;
+    --gold-light:#f0d060;
+    --green:#4caf50;
+    --green-dim:#2e7d32;
+    --green-glow:rgba(76,175,80,0.2);
+    --emerald:#00c853;
+    --text:#e8f0ea;
+    --text2:#8aad90;
+    --text3:#5a7a62;
+    --blue:#1976d2;
+    --radius:14px;
+  }
+
+  html,body{height:100%;overflow:hidden;font-family:'Noto Naskh Arabic','Amiri',serif;background:var(--bg);color:var(--text)}
+  body{display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px}
+
+  body::before{
+    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 600px 400px at 30% 20%,rgba(76,175,80,0.06),transparent),
+      radial-gradient(ellipse 500px 500px at 70% 80%,rgba(212,168,67,0.04),transparent);
+  }
+  body::after{
+    content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;z-index:0;pointer-events:none;opacity:0.018;
+    background-image:
+      linear-gradient(30deg,var(--gold) 1px,transparent 1px),
+      linear-gradient(-30deg,var(--gold) 1px,transparent 1px),
+      linear-gradient(150deg,var(--gold) 1px,transparent 1px),
+      linear-gradient(-150deg,var(--gold) 1px,transparent 1px);
+    background-size:60px 104px;
+  }
+
+  .app{position:relative;z-index:1;width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0 50px}
+
+  .basmala{font-family:'Amiri',serif;font-size:1.3rem;color:var(--gold);opacity:0.7;letter-spacing:1px;animation:fadeDown .8s ease-out}
+
+  /* ---- Ring ---- */
+  .ring-outer{
+    position:relative;width:200px;height:200px;border-radius:50%;padding:4px;
+    background:conic-gradient(from -90deg,var(--gold) 0deg,var(--bg3) 0deg);
+    transition:all .3s;animation:fadeUp .6s ease-out;
+  }
+  .ring-inner{
+    width:100%;height:100%;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,var(--bg3),var(--bg));
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 50px rgba(0,0,0,0.5),0 0 40px rgba(76,175,80,0.08);
+  }
+  .ring-outer.reached{animation:pulseRing .6s ease-out}
+  .count-num{font-family:'Playfair Display','Amiri',serif;font-size:3.8rem;font-weight:700;color:var(--gold-light);line-height:1;transition:transform .08s}
+  .count-num.pop{transform:scale(1.15)}
+  .count-num.reached{color:var(--emerald)}
+  .dhikr-text{font-size:1.05rem;color:var(--text2);margin-top:6px}
+
+  /* ---- Tap ---- */
+  .tap-btn{
+    width:100%;padding:18px;border:none;border-radius:var(--radius);
+    font-size:1.5rem;font-weight:700;font-family:'Amiri',serif;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,#43a047,#2e7d32,#1b5e20);
+    box-shadow:0 4px 24px rgba(76,175,80,0.25),inset 0 1px 0 rgba(255,255,255,0.1);
+    transition:transform .08s,box-shadow .08s;position:relative;overflow:hidden;animation:fadeUp .7s ease-out;
+  }
+  .tap-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.08),transparent 60%);pointer-events:none}
+  .tap-btn:active{transform:scale(0.96);box-shadow:0 2px 12px rgba(76,175,80,0.2)}
+
+  /* ---- Sections ---- */
+  .section{
+    width:100%;background:var(--bg2);border-radius:var(--radius);
+    padding:14px 16px;border:1px solid rgba(76,175,80,0.08);
+    display:flex;flex-direction:column;gap:10px;animation:fadeUp .8s ease-out;
+  }
+  .section-title{font-size:.78rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;text-align:center}
+
+  /* ---- Pills ---- */
+  .pill-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+  .pill{
+    padding:9px 14px;border:1px solid rgba(255,255,255,0.06);border-radius:10px;
+    font-size:.85rem;font-family:'Noto Naskh Arabic',serif;
+    color:var(--text2);background:var(--bg);cursor:pointer;transition:all .2s;
+    flex:1;text-align:center;min-width:0;
+  }
+  .pill:active{transform:scale(0.95)}
+  .pill.active{background:linear-gradient(135deg,var(--green-dim),#1b5e20);color:#fff;border-color:var(--green);box-shadow:0 0 12px var(--green-glow)}
+  .pill-sm{flex:0;min-width:48px}
+  .pill.lang-active{background:linear-gradient(135deg,#1565c0,#0d47a1);color:#fff;border-color:var(--blue);box-shadow:0 0 12px rgba(25,118,210,0.2)}
+
+  .speak-preview{font-size:.95rem;color:var(--gold);min-height:1.3em;text-align:center;direction:ltr;font-style:italic}
+
+  .slider-row{display:flex;align-items:center;gap:10px}
+  .slider-row label{font-size:.78rem;color:var(--text3);min-width:52px;text-align:right}
+  .slider-row input[type=range]{flex:1;height:4px;accent-color:var(--gold);border-radius:2px}
+  .slider-row .val{font-size:.78rem;color:var(--text3);min-width:36px;text-align:left;direction:ltr}
+
+  .action-row{display:flex;gap:10px;width:100%;animation:fadeUp .9s ease-out}
+  .act-btn{
+    flex:1;padding:14px;border:none;border-radius:var(--radius);
+    font-size:1.05rem;font-weight:700;font-family:'Amiri',serif;color:#fff;
+    cursor:pointer;transition:transform .1s;position:relative;overflow:hidden;
+  }
+  .act-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.1),transparent 60%);pointer-events:none}
+  .act-btn:active{transform:scale(0.95)}
+  .btn-speak{background:linear-gradient(135deg,#1976d2,#0d47a1);box-shadow:0 4px 16px rgba(25,118,210,0.2)}
+  .btn-reset{background:linear-gradient(135deg,#c0392b,#8e2020);box-shadow:0 4px 16px rgba(192,57,43,0.2)}
+
+  .rounds{
+    font-family:'Playfair Display','Amiri',serif;font-size:1.1rem;font-weight:700;color:var(--gold);
+    padding:8px 24px;border:1px solid rgba(212,168,67,0.2);border-radius:20px;
+    background:rgba(212,168,67,0.05);animation:fadeUp 1s ease-out;
+  }
+
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:.7;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(0,200,83,0.4)}70%{box-shadow:0 0 0 20px rgba(0,200,83,0)}100%{box-shadow:0 0 0 0 rgba(0,200,83,0)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="basmala" id="basmala">﷽</div>
+
+  <div class="ring-outer" id="ring">
+    <div class="ring-inner">
+      <div class="count-num" id="countNum">0</div>
+      <div class="dhikr-text" id="dhikrText">سبحان الله</div>
+    </div>
+  </div>
+
+  <button class="tap-btn" id="tapBtn">تسبيح</button>
+
+  <div class="section">
+    <div class="section-title" id="secDhikr">الذكر</div>
+    <div class="pill-row" id="dhikrRow">
+      <button class="pill active" data-ar="سبحان الله" data-fr="Gloire à Allah" data-en="Glory to Allah">سبحان الله</button>
+      <button class="pill" data-ar="الحمد لله" data-fr="Louange à Allah" data-en="Praise be to Allah">الحمد لله</button>
+      <button class="pill" data-ar="الله أكبر" data-fr="Allah est le plus grand" data-en="Allah is the Greatest">الله أكبر</button>
+      <button class="pill" data-ar="لا إله إلا الله" data-fr="Il n'y a de dieu qu'Allah" data-en="There is no god but Allah">لا إله إلا الله</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" id="secTarget">الهدف</div>
+    <div class="pill-row" id="targetRow">
+      <button class="pill pill-sm active" data-target="33">33</button>
+      <button class="pill pill-sm" data-target="99">99</button>
+      <button class="pill pill-sm" data-target="100">100</button>
+      <button class="pill pill-sm" data-target="0">∞</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title" id="secVoice">الصوت</div>
+    <div class="pill-row" id="langRow">
+      <button class="pill lang-active" data-lang="ar">عربي</button>
+      <button class="pill" data-lang="fr">Français</button>
+      <button class="pill" data-lang="en">English</button>
+    </div>
+    <div class="speak-preview" id="speakPreview"></div>
+    <div class="slider-row">
+      <label id="lblSpeed">السرعة</label>
+      <input type="range" id="speedSlider" min="25" max="200" value="100">
+      <span class="val" id="speedVal">100%</span>
+    </div>
+    <div class="slider-row">
+      <label id="lblPitch">النبرة</label>
+      <input type="range" id="pitchSlider" min="25" max="200" value="100">
+      <span class="val" id="pitchVal">100%</span>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="act-btn btn-speak" id="speakBtn">نطق 🔊</button>
+    <button class="act-btn btn-reset" id="resetBtn">إعادة ضبط</button>
+  </div>
+
+  <div class="rounds" id="roundsBadge">الجولات: 0</div>
+</div>
+
+<script>
+let count=0, target=33, rounds=0, lang='ar';
+
+const i18n = {
+  ar: { dir:'rtl', tap:'تسبيح', dhikr:'الذكر', target:'الهدف', voice:'الصوت', speed:'السرعة', pitch:'النبرة', speak:'نطق 🔊', reset:'إعادة ضبط', rounds:n=>'الجولات: '+n, tgt:t=>t>0?'الهدف: '+t:'الهدف: ∞' },
+  fr: { dir:'ltr', tap:'Compter', dhikr:'Invocation', target:'Objectif', voice:'Voix', speed:'Vitesse', pitch:'Tonalité', speak:'Parler 🔊', reset:'Réinitialiser', rounds:n=>'Tours : '+n, tgt:t=>t>0?'Objectif : '+t:'Objectif : ∞' },
+  en: { dir:'ltr', tap:'Count', dhikr:'Dhikr', target:'Target', voice:'Voice', speed:'Speed', pitch:'Pitch', speak:'Speak 🔊', reset:'Reset', rounds:n=>'Rounds: '+n, tgt:t=>t>0?'Target: '+t:'Target: ∞' }
+};
+
+const $=id=>document.getElementById(id);
+
+function applyLang(){
+  const t=i18n[lang];
+  document.documentElement.lang = lang === 'ar' ? 'ar' : lang;
+  document.documentElement.dir = t.dir;
+  $('tapBtn').textContent=t.tap;
+  $('secDhikr').textContent=t.dhikr;
+  $('secTarget').textContent=t.target;
+  $('secVoice').textContent=t.voice;
+  $('lblSpeed').textContent=t.speed;
+  $('lblPitch').textContent=t.pitch;
+  $('speakBtn').textContent=t.speak;
+  $('resetBtn').textContent=t.reset;
+  $('roundsBadge').textContent=t.rounds(rounds);
+
+  // Update dhikr pill labels
+  document.querySelectorAll('#dhikrRow .pill').forEach(b=>{
+    b.textContent = b.dataset[lang];
+  });
+
+  // Update ring dhikr display
+  const active = document.querySelector('#dhikrRow .pill.active');
+  if(active) $('dhikrText').textContent = active.dataset[lang];
+
+  $('speakPreview').textContent='';
+}
+
+function updateProgress(){
+  const r=$('ring');
+  if(target>0){
+    const deg = (count/target)*360;
+    r.style.background = `conic-gradient(from -90deg, var(--gold) ${deg}deg, var(--bg3) ${deg}deg)`;
+  } else {
+    r.style.background = 'var(--bg3)';
+  }
+}
+
+// Tap
+$('tapBtn').addEventListener('click',()=>{
+  count++;
+  $('countNum').textContent=count;
+  $('countNum').classList.add('pop');
+  setTimeout(()=>$('countNum').classList.remove('pop'),100);
+  if(navigator.vibrate) navigator.vibrate(15);
+  updateProgress();
+  if(target>0 && count>=target){
+    $('ring').classList.add('reached');
+    $('countNum').classList.add('reached');
+    rounds++;
+    $('roundsBadge').textContent=i18n[lang].rounds(rounds);
+    setTimeout(()=>{
+      count=0;
+      $('countNum').textContent='0';
+      $('ring').classList.remove('reached');
+      $('countNum').classList.remove('reached');
+      updateProgress();
+    },600);
+  }
+});
+
+// Dhikr
+$('dhikrRow').addEventListener('click',e=>{
+  const b=e.target.closest('.pill'); if(!b)return;
+  document.querySelectorAll('#dhikrRow .pill').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $('dhikrText').textContent = b.dataset[lang];
+  $('speakPreview').textContent='';
+});
+
+// Target
+$('targetRow').addEventListener('click',e=>{
+  const b=e.target.closest('.pill'); if(!b)return;
+  document.querySelectorAll('#targetRow .pill').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  target=parseInt(b.dataset.target);
+  updateProgress();
+});
+
+// Language
+$('langRow').addEventListener('click',e=>{
+  const b=e.target.closest('.pill'); if(!b)return;
+  document.querySelectorAll('#langRow .pill').forEach(x=>x.classList.remove('lang-active'));
+  b.classList.add('lang-active');
+  lang=b.dataset.lang;
+  applyLang();
+});
+
+// Sliders
+$('speedSlider').addEventListener('input',()=>{$('speedVal').textContent=$('speedSlider').value+'%'});
+$('pitchSlider').addEventListener('input',()=>{$('pitchVal').textContent=$('pitchSlider').value+'%'});
+
+// Speak
+$('speakBtn').addEventListener('click',()=>{
+  const active=document.querySelector('#dhikrRow .pill.active');
+  if(!active)return;
+  const text = active.dataset[lang];
+  $('speakPreview').textContent = text;
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang = lang==='ar'?'ar-SA':lang==='fr'?'fr-FR':'en-US';
+  u.rate=$('speedSlider').value/100;
+  u.pitch=$('pitchSlider').value/100;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+});
+
+// Reset
+$('resetBtn').addEventListener('click',()=>{
+  count=0;rounds=0;
+  $('countNum').textContent='0';
+  $('roundsBadge').textContent=i18n[lang].rounds(0);
+  $('ring').classList.remove('reached');
+  $('countNum').classList.remove('reached');
+  $('speakPreview').textContent='';
+  updateProgress();
+});
+
+applyLang();
+updateProgress();
+</script>
+</body>
+</html>
